@@ -25,7 +25,7 @@ class PointCloudData(Dataset):
             for file in os.listdir(new_dir):
                 if file.endswith('.off'):
                     sample = {}
-                    sample['pcd_path'] = os.path.join(new_dir,file)
+                    sample['pc_path'] = os.path.join(new_dir,file)
                     sample['category'] = category
                     self.files.append(sample)
 
@@ -39,9 +39,9 @@ class PointCloudData(Dataset):
         return pointcloud
 
     def __getitem__(self, idx):
-        pcd_path = self.files[idx]['pcd_path']
+        pc_path = self.files[idx]['pc_path']
         category = self.files[idx]['category']
-        with open(pcd_path, 'r') as f:
+        with open(pc_path, 'r') as f:
             pointcloud = self.__preproc__(f)
         return {'pointcloud': pointcloud,
                 'category': self.classes[category]}

@@ -1,4 +1,3 @@
-import numpy as np
 from tqdm import tqdm
 import argparse
 import os
@@ -38,7 +37,7 @@ def train(args):
     ])
 
 
-    device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     pointnet = model.PointNet(classes = 5)
     pointnet.to(device)
     optimizer = torch.optim.Adam(pointnet.parameters(), lr=args.lr)
@@ -75,8 +74,8 @@ def train(args):
                 pbar.set_postfix(**{'loss'  : running_loss ,'lr'    : lr})
                 pbar.update(1)
         
-            #pointnet.eval()
-            #correct = total = 0
+        #pointnet.eval()
+        #correct = total = 0
         
         ## validation
         #if valid_loader:
@@ -91,9 +90,10 @@ def train(args):
         #    print('Valid accuracy: %d %%' % val_acc)
 
         # save the model  
-        saveroot = args.save_model_path/'model_'+str(epoch)+'.pth'
-        torch.save(pointnet.state_dict(), saveroot)
-        print('Model saved to ', saveroot)
+        if epoch % 50 == 0:
+            saveroot = os.path.join(args.save_model_path,'model_')+str(epoch)+'.pth'
+            torch.save(pointnet.state_dict(), saveroot)
+            print('Model saved to ', saveroot)
 
 
 def parse_args():
